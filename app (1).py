@@ -1,3 +1,4 @@
+%%writefile app.py
 import streamlit as st
 import numpy as np
 
@@ -8,14 +9,31 @@ st.set_page_config(
     page_icon="🩺"
 )
 
-# CSS for better UI/UX
+# CSS FOR DARK HEADLINES AND BETTER UI
 st.markdown("""
 <style>
+    /* Background and Fonts */
     .stApp { background: linear-gradient(to right, #f8f9fa, #e3f2fd); }
-    h1, h2, h3 { color: #1a237e !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    /* Headlines (Labels) ko Dark Black aur Bold karne ke liye */
+    label[data-testid="stWidgetLabel"] p {
+        color: #000000 !important;
+        font-weight: 800 !important;
+        font-size: 1.1rem !important;
+        text-shadow: 0.1px 0.1px #000000;
+    }
+
+    /* Input titles inside expanders and other areas */
+    .stMarkdown h3, .stSubheader {
+        color: #1a237e !important;
+        font-weight: bold !important;
+    }
+
+    /* Main Title Styling */
     .title { text-align: center; font-size: 42px; font-weight: bold; padding: 20px; color: #1a237e; }
+    
+    /* Result Cards */
     .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-    .metric-container { background: #ffffff; padding: 15px; border-radius: 10px; border-left: 5px solid #1a237e; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -49,7 +67,7 @@ with col3:
     pot = st.slider("Potassium (mEq/L)", 2.0, 7.0, 4.5)
     htn = st.selectbox("Hypertension", ["yes", "no"])
 
-# OTHER FACTORS (Hidden in Expander to keep UI Clean)
+# OTHER FACTORS
 with st.expander("Additional Symptoms & Medical History"):
     ec1, ec2, ec3 = st.columns(3)
     with ec1:
@@ -62,7 +80,7 @@ with st.expander("Additional Symptoms & Medical History"):
         ane = st.selectbox("Anemia", ["yes", "no"])
         ba = st.selectbox("Bacteria", ["present", "notpresent"])
 
-# LOGIC FOR PROBABILITY (UX improvement)
+# RULE-BASED LOGIC
 risk_points = 0
 if sc > 1.5: risk_points += 30
 if bu > 50: risk_points += 15
@@ -75,8 +93,6 @@ risk_percent = min(risk_points, 100)
 # PREDICTION BUTTON
 st.markdown("---")
 if st.button("🚀 Generate Diagnostic Report"):
-    
-    # UI Layout for Result
     res_col1, res_col2 = st.columns([1, 2])
     
     with res_col1:
